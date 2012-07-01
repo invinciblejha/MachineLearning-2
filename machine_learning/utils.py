@@ -58,31 +58,30 @@ class FunctionGenerator:
 		
 		
 	@staticmethod
-	def update_weights(weight_vector, x_vector, y_value):
-		for i in range(len(weight_vector)):
-			weight_vector[i] = weight_vector[i] + x_vector[i] * y_value
-		return weight_vector
-	
-	@staticmethod
-	def perceptron_learning_function(x_data, y_data, hypothesized_function, error_function):
-		learned = False
-		i = 0
-		while not learned:
-			misclassified = MachineLearning.misclassified_data(x_data, y_data, hypothesized_function, error_function)
-			if len(misclassified) > 0:
-				i+=1
-				print "num misclassified: %d" % len(misclassified)
-				random_index = int(random.random() * len(misclassified))
-				hypothesized_function.weight_vector = MachineLearning.update_weights(hypothesized_function.weight_vector, misclassified[random_index], y_data[x_data.index(misclassified[random_index])])
-				
-				print "adjusting weights: %d" % i
-			else:
-				print "LEARNED"
-				learned = True
+	def perceptron_learning_function():
 		
-		e = MachineLearning.in_sample_error(x_data, y_data, hypothesized_function, error_function)
-		print 'e: %f' % e	
-		
+		def _f(x_data, y_data, hypothesized_function, error_function):
+			def update_weights(weight_vector, x_vector, y_value):
+				for i in range(len(weight_vector)):
+					weight_vector[i] = weight_vector[i] + x_vector[i] * y_value
+				return weight_vector
+			
+			learned = False
+			i = 0
+			while not learned:
+				misclassified = MachineLearning.misclassified_data(x_data, y_data, hypothesized_function, error_function)
+				if len(misclassified) > 0:
+					i+=1
+					print "num misclassified: %d" % len(misclassified)
+					random_index = int(random.random() * len(misclassified))
+					
+					hypothesized_function.weight_vector = update_weights(hypothesized_function.weight_vector, misclassified[random_index], y_data[x_data.index(misclassified[random_index])])
+										
+					print "adjusting weights: %d" % i
+				else:
+					print "LEARNED"
+					learned = True
+		return _f
 		
 		
 class MachineLearning:
@@ -148,35 +147,7 @@ class MachineLearning:
 				misclassified.append(x_data[i])
 		return misclassified
 	
-	@staticmethod
-	def update_weights(weight_vector, x_vector, y_value):
-		for i in range(len(weight_vector)):
-			weight_vector[i] = weight_vector[i] + x_vector[i] * y_value
-		return weight_vector
-	
-	@staticmethod
-	def adjust_weights(x_data, y_data, hypothesized_function, error_function):
-		learned = False
-		i = 0
-		while not learned:
-			misclassified = MachineLearning.misclassified_data(x_data, y_data, hypothesized_function, error_function)
-			if len(misclassified) > 0:
-				i+=1
-				print "num misclassified: %d" % len(misclassified)
-				random_index = int(random.random() * len(misclassified))
-				hypothesized_function.weight_vector = MachineLearning.update_weights(hypothesized_function.weight_vector, misclassified[random_index], y_data[x_data.index(misclassified[random_index])])
-				
-				print "adjusting weights: %d" % i
-			else:
-				print "LEARNED"
-				learned = True
 		
-		e = MachineLearning.in_sample_error(x_data, y_data, hypothesized_function, error_function)
-		print 'e: %f' % e	
-	
-	
-	
-	
 class DataGenerator:
 	NATURAL = 0
 	REAL = 1
